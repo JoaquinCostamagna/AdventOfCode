@@ -76,7 +76,6 @@ function partTwo(){
         return acc + curr;
     }, 0);
 
-    console.log(powers);
     console.log(result);
 
 }
