@@ -3,25 +3,28 @@ import fs from 'fs';
 const numberRegex = /\d+/g;
 
 //regEx for anything not a dot (.) or a number
-const symbolRegex = /[^.\d]/g;
+const symbolRegex = /[\/$&+,:;=?@#|'<>^*()%!-]/;
 
 function hasASymbol(value){
+    if (!value) return false;
+    // if (value.includes('*')) return true;
     return symbolRegex.test(value);
 }
 
 function hasAdyacentSymbol(lines, lineNumber, number, index){
-    const previous = lines[lineNumber][index - 1];
-    const next = lines[lineNumber][index + number.length];
-    const top = lineNumber > 0 ? lines[lineNumber - 1].substring(index-1, index + number.length) : null;
-    const bottom = lineNumber < lines.length - 1 ? lines[lineNumber + 1].substring(index-1, index + number.length) : null;
+    const numberLength = number.toString().length;
+    const previous = index > 0 ? lines[lineNumber][index - 1] : null;
+    const next = index + numberLength < lines[lineNumber].length? lines[lineNumber][index + numberLength] : null;
+    const top = lineNumber > 0 ? lines[lineNumber - 1].substring(index-1, index + numberLength + 1) : null;
+    const bottom = lineNumber < lines.length - 1 ? lines[lineNumber + 1].substring(index-1, index + numberLength + 1) : null;
     
-    console.log(number, index,'previous:', previous,'next:', next,'top:', top,'bottom:', bottom);
+    // console.log(number, index,'previous:', previous,'next:', next,'top:', top,'bottom:', bottom);
 
     return hasASymbol(previous) || hasASymbol(next) || hasASymbol(top) || hasASymbol(bottom);
 }
 
 function partOne() {
-    const lines = fs.readFileSync('./example.txt', 'utf8').trim().split('\n');
+    const lines = fs.readFileSync('./input.txt', 'utf8').trim().split('\n');
 
     const linesNumbers = lines.map(line => {
         let match;
@@ -36,10 +39,14 @@ function partOne() {
     });
 
     const linesNumbersWithAdyacentSymbol = linesNumbers.map((lineNumbers, lineNumber) => {
-        return lineNumbers.filter(({number, index}) => hasAdyacentSymbol(lines, lineNumber, number, index));
-    });
+        return lineNumbers.filter(({number, index}) => hasAdyacentSymbol(lines, lineNumber, number, index))
+            .map(({number}) => number)
+    }).flat();
 
-    lines
+    const result = linesNumbersWithAdyacentSymbol.reduce((acc, number) => acc + number, 0);
+
+    // console.log(linesNumbersWithAdyacentSymbol);
+    console.log(result);
 }
 
 partOne();
