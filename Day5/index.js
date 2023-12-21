@@ -65,7 +65,7 @@ function findMinInRange(seedFrom, range, sections){
         rightMin = findMinInRange(middle, (range - stepSize), sections);
     }
 
-    const localMin = Math.min(leftMin, rightMin, seedFrom);
+    const localMin = Math.min(leftMin, rightMin, seedFromLocation);
 
     // console.log(`seedFrom: ${seedFrom}, range: ${range}, localMin: ${localMin}, min: ${Math.min(seedFromLocation, localMin)}`);
     return localMin;
@@ -103,7 +103,7 @@ function partOne(){
 }
 
 function partTwo() {
-    const sections = fs.readFileSync('./example.txt', 'utf-8').split('\n\n');
+    const sections = fs.readFileSync('./input.txt', 'utf-8').split('\n\n');
     const seeds = arrayToNumber(splitBySpaces(sections.shift().split(':')[1].trim()));
     const parsedSections = sections.map( section => (parseSection(section)));
     
